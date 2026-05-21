@@ -1,0 +1,18 @@
+{
+  "train_file": "fraudtrain.csv",
+  "test_file": "fraudtest.csv",
+  "output_file": "fraud_analysis_output.xlsx",
+
+  "columns": {
+    "transaction_time": "trans_date_trans_time",
+    "customer": "cc_num",
+    "merchant": "merchant",
+    "category": "category",
+    "amount": "amt",
+    "customer_lat": "lat",
+    "customer_long": "long",
+    "merchant_lat": "merch_lat",
+    "merchant_long": "merch_long",
+    "fraud_label": "is_fraud"
+  }
+}
