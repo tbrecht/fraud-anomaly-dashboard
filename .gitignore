@@ -2,3 +2,7 @@
 __pycache__/
 .DS_Store
 *.pyc
+
+fraudTrain.csv
+fraudTest.csv
+fraud_analysis_output.xlsx
