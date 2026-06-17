@@ -1,67 +1,180 @@
 # Fraud & Anomaly Detection Dashboard
 
-Interactive fraud investigation and anomaly detection project built in Python using explainable risk scoring, behavioral analytics, and an investigator-style dashboard.
+![Run Python Tests](https://github.com/tbrecht/fraud-anomaly-dashboard/actions/workflows/tests.yml/badge.svg)
 
-The project evaluates suspicious transactions using transparent fraud signals rather than black-box models and provides an explainable workflow for reviewing high-risk activity.
+Interactive fraud investigation and anomaly detection project built in Python using explainable risk scoring, behavioral analytics, transaction review workflows, and an investigator-style Streamlit dashboard.
+
+This project demonstrates how suspicious activity can be prioritized using transparent fraud signals rather than a black-box model.
 
 ---
 
-# Dashboard Preview
+## Business Case
 
-## Dashboard Overview
+Fraud teams often need to review large volumes of transactions with limited investigation time. A useful analytics workflow should help answer:
+
+1. Which transactions appear most suspicious?
+2. Why was a transaction flagged?
+3. Which risk signals are driving the score?
+4. Are high-scoring transactions enriched for known fraud?
+5. How can an investigator review suspicious activity quickly?
+
+This project simulates that workflow using explainable scoring logic, transaction-level explanations, Excel reporting, automated tests, and an interactive dashboard.
+
+---
+
+## Dashboard Preview
+
+### Dashboard Overview
 
 ![Dashboard Overview](screenshots/dashboard_overview.png)
 
-Executive view showing:
+Executive view showing transaction counts, fraud prevalence, risk distribution, and fraud enrichment.
 
-- Transaction counts
-- Fraud prevalence
-- Risk distribution
-- Fraud enrichment analysis
-
----
-
-## Fraud Investigator
+### Fraud Investigator
 
 ![Fraud Investigator](screenshots/fraud_investigator.png)
 
-Interactive investigation workflow displaying:
+Interactive investigation view showing composite risk score, risk gauge, human-readable explanations, velocity metrics, online transaction handling, and travel-aware scoring adjustments.
 
-- Composite risk score
-- Risk gauge
-- Human explanations
-- Velocity metrics
-- Online transaction handling
-- Travel-aware scoring adjustments
-
----
-
-## Risk Map
+### Risk Map
 
 ![Risk Map](screenshots/risk_map.png)
 
-Geographic review of suspicious merchant activity.
+Geographic review of suspicious merchant activity. Distance risk is automatically reduced for online-style transactions.
 
-Distance risk is automatically reduced for online-style transactions.
-
----
-
-## Risk Driver Analysis
+### Risk Driver Analysis
 
 ![Risk Driver Analysis](screenshots/risk_drivers_analysis.png)
 
-Analytical layer showing:
-
-- Primary fraud drivers
-- Risk relationships
-- Fraud enrichment
-- Amount vs score behavior
+Analytical layer showing primary fraud drivers, risk relationships, fraud enrichment, and amount-versus-score behavior.
 
 ---
 
-# Project Goal
+## Sample Outputs
 
-Identify suspicious transactions using explainable business logic.
+The repository includes a curated sample output workbook so reviewers can inspect results without running the full analysis locally.
+
+| Output | Description |
+|---|---|
+| `sample_outputs/fraud_analysis_output.xlsx` | Excel workbook with executive summary, top suspicious transactions, risk summaries, fraud enrichment analysis, score distribution, model breakdown, and limitations |
+
+---
+
+## What This Project Demonstrates
+
+- Building explainable fraud and anomaly detection logic
+- Creating behavioral risk signals from transaction data
+- Translating model outputs into investigator-friendly explanations
+- Evaluating whether high-scoring transactions are enriched for known fraud
+- Producing Excel reporting outputs for analyst review
+- Designing an interactive Streamlit dashboard for fraud investigation
+- Adding automated tests and GitHub Actions to verify key project assets
+
+---
+
+## Project Workflow
+
+    Raw transaction data
+        |
+        v
+    Configuration layer: fraud_config.json
+        |
+        v
+    Feature engineering: fraud_analysis.py
+        |
+        v
+    Behavioral signal creation
+        |
+        v
+    Composite risk scoring
+        |
+        v
+    Excel reporting output
+        |
+        v
+    Streamlit dashboard: dashboard.py
+        |
+        v
+    Investigator review
+
+---
+
+## Repository Structure
+
+    fraud-anomaly-dashboard/
+
+    .github/
+    - workflows/
+      - tests.yml
+
+    fraud_analysis.py
+    dashboard.py
+    fraud_config.json
+    requirements.txt
+    README.md
+
+    sample_outputs/
+    - fraud_analysis_output.xlsx
+
+    screenshots/
+    - dashboard_overview.png
+    - fraud_investigator.png
+    - risk_map.png
+    - risk_drivers_analysis.png
+
+    tests/
+    - test_config.py
+    - test_sample_output.py
+
+---
+
+## Dataset
+
+The project was developed using local transaction datasets:
+
+    fraudTrain.csv
+    fraudTest.csv
+
+The raw datasets are intentionally excluded from the repository because they are large data files. The repository includes the code, configuration, screenshots, tests, and curated sample output workbook.
+
+Training dataset size used locally:
+
+    1,296,675 transactions
+
+Testing dataset size used locally:
+
+    555,719 transactions
+
+Observed fraud prevalence:
+
+    Approximately 0.58%
+
+---
+
+## Key Components
+
+### 1. Configuration Layer
+
+The project uses `fraud_config.json` to define source files, output files, and expected column mappings.
+
+The configuration includes mappings for:
+
+- Transaction timestamp
+- Customer identifier
+- Merchant
+- Category
+- Amount
+- Customer latitude and longitude
+- Merchant latitude and longitude
+- Fraud label
+
+This makes the workflow easier to inspect and adjust without hard-coding every field reference throughout the analysis.
+
+---
+
+### 2. Fraud Signal Engineering
+
+The analysis creates several explainable transaction-level risk signals.
 
 Signals include:
 
@@ -70,280 +183,157 @@ Signals include:
 - Geographic distance
 - Overnight activity
 - Merchant rarity
-- Online purchase adjustment
-- Travel purchase adjustment
+- Online transaction adjustment
+- Travel transaction adjustment
+
+The goal is not only to rank suspicious transactions, but also to explain why each transaction was flagged.
 
 ---
 
-# Workflow
+## Fraud Signals
 
-Raw Transaction Data
+### Amount Risk
 
-↓
+Amount risk measures how unusual a transaction amount is compared with the customer’s average transaction amount.
 
-Feature Engineering
-
-↓
-
-Behavioral Signal Creation
-
-↓
-
-Composite Risk Scoring
-
-↓
-
-Fraud Enrichment Evaluation
-
-↓
-
-Interactive Dashboard
-
-↓
-
-Investigator Review
-
----
-
-# Dataset
-
-Files used locally:
-
-```text
-fraudtrain.csv
-fraudtest.csv
-```
-
-Training dataset:
-
-- 1,296,675 transactions
-
-Testing dataset:
-
-- 555,719 transactions
-
-Observed fraud prevalence:
-
-```text
-~0.58%
-```
-
-Raw datasets are intentionally excluded from the repository.
-
----
-
-# Fraud Signals
-
-## Amount Risk (25%)
-
-Measures:
-
-```text
-Transaction Amount
-÷
-Customer Average Spend
-```
-
-Large deviations increase risk.
-
-Travel-related transactions receive reduced amount sensitivity.
-
-Examples:
-
-Normal customer spend:
-
-```text
-$40
-```
-
-Travel purchase:
-
-```text
-$600 hotel
-```
-
-Risk contribution reduced.
-
----
-
-## Velocity Risk (25%)
-
-Uses real behavioral windows:
-
-```text
-Transactions in last 1 hour
-
-+
-
-Transactions in last 24 hours
-```
-
-Captures:
-
-- Bursts
-- Rapid activity
-- Frequency spikes
-
----
-
-## Distance Risk (15%)
-
-Calculates:
-
-```text
-Customer Location
-
-↓
-
-Merchant Location
-```
-
-Online-style categories automatically reduce distance impact.
-
-Examples:
-
-```text
-shopping_net
-misc_net
-grocery_net
-```
-
-Distance becomes less influential.
-
----
-
-## Time Risk (10%)
-
-Flags:
-
-```text
-11 PM – 5 AM
-```
-
-Captures overnight behavior.
-
----
-
-## Merchant Rarity Signal (25%)
-
-Measures merchant frequency.
-
-Important:
-
-Rare merchant ≠ fraud
-
-Merchant rarity is only one signal.
-
----
-
-# Composite Risk Score
-
-Final score:
-
-```text
-25% Amount Risk
-
-+
-
-25% Velocity Risk
-
-+
-
-15% Distance Risk
-
-+
-
-10% Time Risk
-
-+
-
-25% Merchant Rarity Signal
-```
-
-Risk ranges:
-
-Low:
-
-```text
-0–24.9
-```
-
-Moderate:
-
-```text
-25–49.9
-```
-
-High:
-
-```text
-50–74.9
-```
-
-Critical:
-
-```text
-75–100
-```
-
-Important:
-
-The score is:
-
-✅ Relative ranking
-
-NOT:
-
-❌ Fraud probability
+Large deviations increase risk. Travel-related transactions receive reduced amount sensitivity because higher spending may be expected in travel contexts.
 
 Example:
 
-```text
-Risk Score = 70
-```
-
-Does NOT mean:
-
-```text
-70% chance of fraud
-```
+    A customer who normally spends $40 makes a $600 hotel purchase.
+    The amount is unusual, but travel context reduces the risk contribution.
 
 ---
 
-# Evaluation Layer
+### Velocity Risk
 
-Model evaluation includes:
+Velocity risk captures recent transaction bursts using behavioral windows.
 
-- Fraud enrichment
-- Top 100 review group
-- Top 500 review group
-- Top 1,000 review group
-- Full dataset comparison
+The project evaluates:
 
-Purpose:
+    Transactions in the last 1 hour
+    Transactions in the last 24 hours
 
-Determine whether higher-risk transactions show increased fraud concentration.
+This helps identify rapid activity that may require review.
 
 ---
 
-# Dashboard Features
+### Distance Risk
 
-## Executive KPIs
+Distance risk estimates the physical distance between the customer’s home location and the merchant location.
 
-Displays:
+Online-style categories reduce distance impact because long customer-to-merchant distance can be normal for online purchases.
+
+Examples of online-style categories:
+
+    shopping_net
+    misc_net
+    grocery_net
+
+---
+
+### Time Risk
+
+Time risk flags overnight transactions.
+
+The overnight window used in this project is:
+
+    11 PM to 5 AM
+
+This signal is treated as one factor, not proof of fraud.
+
+---
+
+### Merchant Rarity Signal
+
+Merchant rarity measures how frequently a merchant appears in the transaction history.
+
+A rare merchant is not automatically fraudulent. It is one signal that should be interpreted alongside amount, velocity, distance, time, and transaction context.
+
+---
+
+## Composite Risk Score
+
+The final composite risk score combines the explainable fraud signals.
+
+| Risk Area | Weight | Description |
+|---|---:|---|
+| Amount Risk | 25% | Unusual transaction amount relative to customer average |
+| Velocity Risk | 25% | Recent transaction frequency using 1-hour and 24-hour windows |
+| Distance Risk | 15% | Customer-to-merchant distance, downweighted for online-style categories |
+| Time Risk | 10% | Overnight transaction activity |
+| Merchant Rarity Signal | 25% | Relative merchant rarity in the transaction history |
+
+Score range:
+
+    0 = Lowest relative concern
+    100 = Highest relative concern
+
+Risk bands:
+
+| Score Range | Risk Band |
+|---:|---|
+| 0 to 24.9 | Low |
+| 25 to 49.9 | Moderate |
+| 50 to 74.9 | High |
+| 75 to 100 | Critical |
+
+A risk score of 70 does not mean there is a 70% probability of fraud. It means the transaction ranks high relative to other transactions based on the project’s weighted fraud signals.
+
+---
+
+## Evaluation Layer
+
+The project evaluates whether higher-risk transactions show increased fraud concentration.
+
+Evaluation groups include:
+
+- Top 100 scored transactions
+- Top 500 scored transactions
+- Top 1,000 scored transactions
+- Full dataset
+
+This helps determine whether the risk scoring logic is meaningfully prioritizing suspicious transactions for review.
+
+---
+
+## Output Workbook
+
+The analysis generates:
+
+    fraud_analysis_output.xlsx
+
+The curated sample version is available at:
+
+    sample_outputs/fraud_analysis_output.xlsx
+
+Workbook sheets include:
+
+- `Executive_Summary`
+- `Top_Suspicious`
+- `Risk_Summary`
+- `Fraud_By_Risk`
+- `Model_Evaluation`
+- `Score_Distribution`
+- `Model_Breakdown`
+- `Limitations`
+
+---
+
+## Dashboard Features
+
+### Executive KPIs
+
+The dashboard displays:
 
 - Transactions reviewed
 - Known fraud count
 - Fraud rate
 - Critical transaction count
 
----
+### Fraud Investigator
 
-## Fraud Investigator
-
-Review suspicious transactions individually.
-
-Shows:
+The investigator view supports transaction-level review and displays:
 
 - Risk score
 - Fraud label
@@ -354,13 +344,11 @@ Shows:
 - Travel flag
 - Online flag
 - Velocity windows
-- Human explanation
+- Human-readable explanation
 
----
+### Visualizations
 
-## Visualizations
-
-Dashboard includes:
+Dashboard visualizations include:
 
 - Donut chart
 - Fraud enrichment chart
@@ -373,132 +361,116 @@ Dashboard includes:
 
 ---
 
-# Output Workbook
+## Automated Testing
 
-Generated:
+The project includes automated tests for configuration integrity and sample output validation. Tests run locally with `pytest` and automatically through GitHub Actions on pushes and pull requests to `master`.
 
-```text
-fraud_analysis_output.xlsx
-```
+Current test coverage includes:
 
-Sheets:
+### Configuration Tests
 
-- Executive_Summary
-- Top_Suspicious
-- Risk_Summary
-- Fraud_By_Risk
-- Model_Evaluation
-- Score_Distribution
-- Model_Breakdown
-- Limitations
+- Confirms `fraud_config.json` exists
+- Confirms required top-level config keys exist
+- Confirms required column mappings are populated
 
----
+### Sample Output Tests
 
-# Project Structure
+- Confirms the curated output workbook exists
+- Confirms the workbook contains expected report sheets
 
-```text
-fraud-anomaly-dashboard/
+Run tests locally with:
 
-fraud_analysis.py
-dashboard.py
-fraud_config.json
-README.md
-requirements.txt
-
-sample_outputs/
-└── fraud_analysis_output.xlsx
-
-screenshots/
-├── dashboard_overview.png
-├── fraud_investigator.png
-├── risk_map.png
-└── risk_drivers_analysis.png
-```
+    PYTHONPATH=. python3 -m pytest tests/
 
 ---
 
-# How To Run
+## How To Run
 
-Create environment:
+Create a virtual environment:
 
-```bash
-python3 -m venv .venv
-```
+    python3 -m venv .venv
 
-Activate:
+Activate the environment:
 
-```bash
-source .venv/bin/activate
-```
+    source .venv/bin/activate
 
-Install:
+Install dependencies:
 
-```bash
-pip install -r requirements.txt
-```
+    pip install -r requirements.txt
 
-Run analysis:
+Run the fraud analysis workflow:
 
-```bash
-python3 fraud_analysis.py
-```
+    python3 fraud_analysis.py
 
-Launch dashboard:
+Launch the dashboard:
 
-```bash
-streamlit run dashboard.py
-```
+    streamlit run dashboard.py
+
+Run tests:
+
+    PYTHONPATH=. python3 -m pytest tests/
 
 ---
 
-# Skills Demonstrated
+## Skills Demonstrated
 
-Analytics:
+### Analytics
 
 - Fraud detection
 - Anomaly detection
 - Behavioral scoring
 - Feature engineering
 - Explainable analytics
-- Evaluation design
+- Risk ranking
+- Fraud enrichment evaluation
 
-Technical:
+### Technical
 
 - Python
-- Pandas
+- pandas
+- NumPy
+- OpenPyXL
 - Streamlit
 - Plotly
-- OpenPyXL
+- pytest
+- GitHub Actions
+- Configuration-driven workflows
 
-Business:
+### Business
 
 - Fraud investigation
 - Risk communication
 - Decision support
 - Human-readable reporting
+- Investigator workflow design
+- Transparent model interpretation
 
 ---
 
-# Known Limitations
+## Why This Project Matters
 
-- Risk score is not probability
-- Distance logic simplified
-- Travel logic category-based
+Fraud analytics tools need to do more than assign scores. They need to help investigators understand what happened, why a transaction was flagged, and where to focus review time.
+
+This project emphasizes explainability, reviewability, and practical decision support. It shows how transaction data can be transformed into fraud risk signals, prioritized review lists, workbook outputs, and an interactive dashboard.
+
+---
+
+## Limitations
+
+This project is designed for portfolio and demonstration purposes.
+
+Known limitations:
+
+- Risk score is not a fraud probability
+- Distance logic is simplified
+- Travel logic is category-based
 - Merchant rarity is contextual
-- Rule-based scoring used intentionally
-
-Future improvements:
-
-- Card-present indicators
-- Merchant networks
-- Fraud rings
-- Temporal sequence analysis
-- Graph analytics
-- ML comparison layer
+- Rule-based scoring is used intentionally
+- Production systems would benefit from card-present indicators, merchant network analysis, device data, account history, and supervised machine learning comparison layers
 
 ---
 
-# Disclaimer
+## Disclaimer
 
 Created for portfolio and demonstration purposes.
 
